@@ -1,4 +1,6 @@
 // ignore: import_of_legacy_library_into_null_safe
+import 'dart:html';
+
 import 'package:location/location.dart';
 
 class LocationTracker {
@@ -16,12 +18,14 @@ class LocationTracker {
     if (_permissionGranted == PermissionStatus.denied)
       _permissionGranted = await _location.requestPermission();
 
-    if (_serviceEnabled || _permissionGranted == PermissionStatus.denied)
+    if (!_serviceEnabled ||
+        _permissionGranted == PermissionStatus.denied ||
+        _permissionGranted == PermissionStatus.deniedForever)
       return GeoLocationData(locationData: null, status: LocationStatus.denied);
 
     return GeoLocationData(
       locationData: await _location.getLocation(),
-      status: LocationStatus.denied,
+      status: LocationStatus.granted,
     );
   }
 }

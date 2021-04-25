@@ -14,9 +14,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
   final LocationTracker _locationTracker = LocationTracker();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
+    _getLocation();
+  }
 
+  Future<void> _getLocation() async {
     GeoLocationData _data = await _locationTracker.getLocation();
 
     if (_data.status == LocationStatus.denied) {
@@ -32,16 +35,19 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: RawMaterialButton(
-        onPressed: () {},
-        fillColor: Colors.blue,
-        padding: EdgeInsets.all(10.0),
-        child: Text(
-          locationText,
-          style: TextStyle(color: Colors.white),
+      body: Center(
+        child: RawMaterialButton(
+          onPressed: () {
+            _getLocation();
+          },
+          fillColor: Colors.blue,
+          padding: EdgeInsets.all(10.0),
+          child: Text(
+            locationText,
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
-    ));
+    );
   }
 }
