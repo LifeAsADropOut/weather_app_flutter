@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/utils.dart';
 
+const String API_KEY = "878286a9eb6402f9a8d720f905722563";
+
 class LoadingScreen extends StatefulWidget {
   LoadingScreen({Key? key}) : super(key: key);
 
@@ -9,15 +11,9 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  String locationText = "";
+  String locationText = "GET LOCATION";
 
   final LocationTracker _locationTracker = LocationTracker();
-
-  @override
-  void initState() {
-    super.initState();
-    _getLocation();
-  }
 
   Future<void> _getLocation() async {
     GeoLocationData _data = await _locationTracker.getLocation();
@@ -45,6 +41,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           child: Text(
             locationText,
             style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
           ),
         ),
       ),
