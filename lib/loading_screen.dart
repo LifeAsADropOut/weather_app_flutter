@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:weather_app/location_screen.dart';
 import 'package:weather_app/utils.dart';
-
-const String API_KEY = "878286a9eb6402f9a8d720f905722563";
 
 class LoadingScreen extends StatefulWidget {
   LoadingScreen({Key? key}) : super(key: key);
@@ -15,6 +15,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   final LocationTracker _locationTracker = LocationTracker();
 
+  @override
+  void initState() {
+    super.initState();
+    _getLocation();
+  }
+
   Future<void> _getLocation() async {
     GeoLocationData _data = await _locationTracker.getLocation();
 
@@ -22,27 +28,34 @@ class _LoadingScreenState extends State<LoadingScreen> {
       setState(() {
         locationText = "FAILED TO GET LOCATION PERMISSION!";
       });
-    } else
-      setState(() {
-        locationText = _data.locationData.toString();
-      });
+    } else {
+      NetworkHelper _helper = NetworkHelper(
+        getURL(
+            lat: _data.locationData!.latitude!.round(),
+            lon: _data.locationData!.longitude!.round()),
+      );
+
+      var data = await _helper.getWeather();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LocationScreen(
+            name: data['name'],
+            temp: data['temp'],
+          ),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: RawMaterialButton(
-          onPressed: () {
-            _getLocation();
-          },
-          fillColor: Colors.blue,
-          padding: EdgeInsets.all(10.0),
-          child: Text(
-            locationText,
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
+        child: SpinKitDoubleBounce(
+          color: Colors.pink,
+          size: 50.0,
         ),
       ),
     );
